@@ -1,6 +1,9 @@
-﻿using NUnit.Framework;
+﻿using AventStack.ExtentReports;
+using NUnit.Framework;
+using NUnit.Framework.Interfaces;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using SeleniumTests.Utilities;
 
 namespace SeleniumTests;
 
@@ -11,6 +14,13 @@ public class LoginTests
     [SetUp]
     public void Setup()
     {
+        // Lấy tên của Test Case hiện tại đang chạy trong NUnit
+        string testName = TestContext.CurrentContext.Test.Name;
+
+        // Tạo một mục (node) mới trong file báo cáo HTML
+        ReportManager.CreateTest(testName);
+        ReportManager.CurrentTest.Log(Status.Info, "Bắt đầu khởi tạo Trình duyệt Chrome");
+
         // Khởi tạo trình duyệt Chrome. 
         // Nhờ Selenium Manager, thư viện sẽ TỰ ĐỘNG tìm và tải ChromeDriver phù hợp.
         driver = new ChromeDriver();
@@ -44,6 +54,20 @@ public class LoginTests
     [TearDown]
     public void TearDown()
     {
+        // 1. Lấy kết quả chạy test từ NUnit (Pass, Fail, hay Skip)
+        var status = TestContext.CurrentContext.Result.Outcome.Status;
+        var errorMessage = TestContext.CurrentContext.Result.Message;
+
+        // 2. Ghi log tương ứng vào ExtentReports
+        if (status == TestStatus.Failed)
+        {
+            ReportManager.CurrentTest.Log(Status.Fail, $"Test Thất Bại: {errorMessage}");
+            // (Bài tập nâng cao: Sinh viên có thể viết code chụp màn hình ở đây và đính kèm vào report)
+        }
+        else if (status == TestStatus.Passed)
+        {
+            ReportManager.CurrentTest.Log(Status.Pass, "Test Thành Công!");
+        }
         // LUÔN LUÔN dọn dẹp driver sau khi test xong để tránh treo process Chrome ngầm
         if (driver != null)
         {

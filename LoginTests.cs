@@ -30,7 +30,7 @@ public class LoginTests
     }
 
     [Test]
-    public void Test_ValidLogin()
+    public void Test_ValidLogin_V1()
     {
         // 1. Điều hướng đến trang đăng nhập
         driver.Navigate().GoToUrl("https://the-internet.herokuapp.com/login");
@@ -46,10 +46,26 @@ public class LoginTests
     }
 
     [Test]
-    public void Test_InValidLogin_WithWrongPassword() { }
+    public void Test_ValidLogin_V2()
+    {
+        // 1. Điều hướng đến trang đăng nhập
+        driver.Navigate().GoToUrl("https://the-internet.herokuapp.com/login");
 
-    [Test]
-    public void Test_InValidLogin_WithWrongUserName() { }
+        // 2. Tương tác với các phần tử
+        driver.FindElement(By.Id("username")).SendKeys("tomsmithasw");
+        driver.FindElement(By.Name("password")).SendKeys("SuperSecretPassword!");
+        driver.FindElement(By.CssSelector("button[type='submit']")).Click();
+
+        // 3. Xác minh kết quả (Assert)
+        IWebElement flashMessage = driver.FindElement(By.Id("flash"));
+        Assert.That(flashMessage.Text, Does.Contain("You logged into a secure area!"));
+    }
+
+    //[Test]
+    //public void Test_InValidLogin_WithWrongPassword() { }
+
+    //[Test]
+    //public void Test_InValidLogin_WithWrongUserName() { }
 
     [TearDown]
     public void TearDown()
@@ -62,7 +78,23 @@ public class LoginTests
         if (status == TestStatus.Failed)
         {
             ReportManager.CurrentTest.Log(Status.Fail, $"Test Thất Bại: {errorMessage}");
-            // (Bài tập nâng cao: Sinh viên có thể viết code chụp màn hình ở đây và đính kèm vào report)
+            try
+            {
+                // Ép kiểu IWebDriver sang ITakesScreenshot để sử dụng chức năng chụp ảnh
+                ITakesScreenshot screenshotDriver = (ITakesScreenshot)driver;
+                Screenshot screenshot = screenshotDriver.GetScreenshot();
+
+                // Lấy ảnh dưới dạng chuỗi Base64 (Cực kỳ hữu ích để nhúng thẳng vào file HTML)
+                string base64Image = screenshot.AsBase64EncodedString;
+
+                // Đính kèm ảnh vào báo cáo ExtentReports
+                ReportManager.CurrentTest.AddScreenCaptureFromBase64String(base64Image, "Ảnh chụp màn hình lúc lỗi");
+            }
+            catch (Exception ex)
+            {
+                // Bắt lỗi dự phòng trường hợp trình duyệt crash không thể chụp ảnh
+                ReportManager.CurrentTest.Log(Status.Warning, $"Không thể chụp màn hình. Lỗi: {ex.Message}");
+            }
         }
         else if (status == TestStatus.Passed)
         {

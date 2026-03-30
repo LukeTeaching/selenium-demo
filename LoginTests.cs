@@ -20,7 +20,7 @@ public class LoginTests
     }
 
     [Test]
-    public void Test_ValidLogin_ShouldSucceed()
+    public void Test_ValidLogin()
     {
         // 1. Điều hướng đến trang đăng nhập
         driver.Navigate().GoToUrl("https://the-internet.herokuapp.com/login");
@@ -34,6 +34,12 @@ public class LoginTests
         IWebElement flashMessage = driver.FindElement(By.Id("flash"));
         Assert.That(flashMessage.Text, Does.Contain("You logged into a secure area!"));
     }
+
+    [Test]
+    public void Test_InValidLogin_WithWrongPassword() { }
+
+    [Test]
+    public void Test_InValidLogin_WithWrongUserName() { }
 
     [TearDown]
     public void TearDown()

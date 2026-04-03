@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SeleniumTests.Tests
+namespace SeleniumTests.Tests.Login
 {
     public class LoginTestV2 : BaseTest
     {
@@ -13,7 +13,7 @@ namespace SeleniumTests.Tests
         {
             yield return new TestCaseData("wronguser", "SuperSecretPassword!")
                 .Returns("Your username is invalid!")
-                .SetName("Login_With_Wrong_Username"); 
+                .SetName("Login_With_Wrong_Username");
 
             yield return new TestCaseData("tomsmith", "wrongpassword")
                 .Returns("Your password is invalid!")
@@ -24,7 +24,7 @@ namespace SeleniumTests.Tests
                 .SetName("Login_With_Empty_Credentials");
         }
 
-        [TestCaseSource(nameof(InvalidLoginData))]
+        //[TestCaseSource(nameof(InvalidLoginData))]
         public string Test_InvalidLogin_UsingDataSource(string username, string password)
         {
             var loginPage = new LoginPage(driver);

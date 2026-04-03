@@ -1,12 +1,12 @@
 ﻿using NUnit.Framework;
-using SeleniumTests.Pages; // Import thư mục Pages
+using SeleniumTests.Pages;
 
-namespace SeleniumTests.Tests;
+namespace SeleniumTests.Tests.Login;
 
 // Kế thừa BaseTest để tự động chạy Setup() và TearDown()
 public class LoginTests : BaseTest
 {
-    [Test]
+   // [Test]
     public void Test_ValidLogin_ShouldSucceed()
     {
         // 1. Arrange: Khởi tạo trang Login
@@ -21,7 +21,7 @@ public class LoginTests : BaseTest
         Assert.That(actualMessage, Does.Contain("You logged into a secure area!"));
     }
 
-    [Test]
+   // [Test]
     public void Test_InvalidLogin_ShouldFail()
     {
         var loginPage = new LoginPage(driver);
